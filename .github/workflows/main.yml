@@ -17,7 +17,7 @@ jobs:
       env:
         TWTR_SECRET: ${{ secrets.T_ENV }}
       run: |
-        echo "TWTR_SECRET = '$TWTR_SECRET'" > src/keys.py
+        echo "TWTR_SECRET = '$TWTR_SECRET'" > ./keys.py
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -32,7 +32,7 @@ jobs:
     - name: Package project
       run: |
         mkdir package
-        cp -r src/* package/
+        cp -r ./* package/
         cd package
         pip install -r ../requirements.txt -t .
         zip -r ../lambda_package.zip .
