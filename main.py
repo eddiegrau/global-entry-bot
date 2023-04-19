@@ -2,11 +2,9 @@ import argparse
 from datetime import datetime, timedelta
 import logging
 import sys
-
+import os
 import requests
 import twitter
-
-from keys import twitter_credentials
 
 LOGGING_FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
 
@@ -86,8 +84,9 @@ def main():
 
 def lambda_handler(event, context):
     logging.info('Handler Started')
-    
+    twitter_credentials = os.environ.get("TWTR_SECRET")
     main()
 
 if __name__ == "__main__":
-    lambda_handler([],[])
+    from keys import twitter_credentials
+    main()
