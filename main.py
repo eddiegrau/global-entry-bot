@@ -6,17 +6,18 @@ import sys
 import requests
 import twitter
 
-from secrets import twitter_credentials
+from keys import twitter_credentials
 
 LOGGING_FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
 
 # LAX is good for testing
 LOCATIONS = [
-    ('SFO', 5446),
+    ('BNA', 10260),
+    # ('MEM', 13621),
     # ('LAX', 5180)
 ]
 
-DELTA = 4  # Weeks
+DELTA = 6  # Weeks
 
 SCHEDULER_API_URL = 'https://ttp.cbp.dhs.gov/schedulerapi/locations/{location}/slots?startTimestamp={start}&endTimestamp={end}'
 TTP_TIME_FORMAT = '%Y-%m-%dT%H:%M'
@@ -70,8 +71,12 @@ def main():
     parser.add_argument('--verbose', '-v', action='store_true', default=False)
     args = parser.parse_args()
 
-    if args.verbose:
-        logging.basicConfig(format=LOGGING_FORMAT,
+#    if args.verbose:
+#        logging.basicConfig(format=LOGGING_FORMAT,
+#                            level=logging.INFO,
+#                            stream=sys.stdout)
+
+    logging.basicConfig(format=LOGGING_FORMAT,
                             level=logging.INFO,
                             stream=sys.stdout)
 
@@ -79,5 +84,10 @@ def main():
     for location_name, location_code in LOCATIONS:
         check_for_openings(location_name, location_code, args.test)
 
-if __name__ == '__main__':
+def lambda_handler(event, context):
+    logging.info('Handler Started')
+    
     main()
+
+if __name__ == "__main__":
+    lambda_handler([],[])
