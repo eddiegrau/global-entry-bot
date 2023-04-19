@@ -13,6 +13,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Create keys.py and inject secret
+      env:
+        TWTR_SECRET: ${{ secrets.T_ENV }}
+      run: |
+        echo "TWTR_SECRET = '$TWTR_SECRET'" > ./keys.py
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -30,12 +36,6 @@ jobs:
         cd package
         pip install -r ../requirements.txt -t .
         zip -r ../lambda_package.zip .
-   
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: lambda_package
-        path: lambda_package.zip
 
   deploy:
     needs: package
@@ -44,11 +44,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
-    - name: Download artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: lambda_package
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -70,9 +65,3 @@ jobs:
     - name: Deploy to AWS Lambda
       run: |
         aws lambda update-function-code --function-name GE-Bot --zip-file fileb://lambda_package.zip
-        
-    - name: Update Lambda environment variable with secret
-      env:
-        TWTR_SECRET: ${{ secrets.T_ENV }}
-      run: |
-        aws lambda update-function-configuration --function-name your-function-name --environment "Variables={TWTR_SECRET=$TWTR_SECRET}"
