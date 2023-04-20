@@ -72,7 +72,5 @@ jobs:
         aws lambda update-function-code --function-name GE-Bot --zip-file fileb://lambda_package.zip
         
     - name: Update Lambda environment variable with secret
-      env:
-        TWTR_SECRET: ${{ secrets.T_ENV }}
       run: |
-        aws lambda update-function-configuration --function-name GE-Bot --environment Variables={TWTR_SECRET=$TWTR_SECRET}
+        aws lambda update-function-configuration --function-name GE-Bot --environment "Variables={TWTR_SECRET=${{ secrets.TWTR_SECRET }}}"
