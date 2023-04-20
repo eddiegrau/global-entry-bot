@@ -71,6 +71,10 @@ jobs:
       run: |
         aws lambda update-function-code --function-name GE-Bot --zip-file fileb://lambda_package.zip
         
+    - name: Mask secret
+      run: |
+        echo "::add-mask::${{ secrets.T_ENV }}"  
+    
     - name: Update Lambda environment variable with secret
       run: |
         aws lambda update-function-configuration --function-name GE-Bot --environment "Variables={TWTR_SECRET=${{ secrets.T_ENV }}}"
