@@ -77,4 +77,4 @@ jobs:
     
     - name: Update Lambda environment variable with secret
       run: |
-        aws lambda update-function-configuration --function-name GE-Bot --environment "Variables={TWTR=${{ secrets.T_ENV }}}" --debug
+        aws lambda update-function-configuration --function-name GE-Bot --environment '{"Variables":={TWTR=${{ secrets.T_ENV }}}}' --debug
