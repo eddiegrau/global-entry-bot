@@ -84,7 +84,7 @@ def main():
 
 def lambda_handler(event, context):
     logging.info('Handler Started')
-    twitter_credentials = os.environ.get("TWTR_SECRET")
+    twitter_credentials = os.environ.get("TWTR")
     main()
 
 if __name__ == "__main__":
