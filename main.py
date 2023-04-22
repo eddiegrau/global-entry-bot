@@ -5,8 +5,19 @@ import sys
 import os
 import requests
 import twitter
+import json
 
 LOGGING_FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+
+# Configure the logging to use AWS Lambda's logging handler
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s.%(msecs)03d %(levelname)s [%(filename)s:%(lineno)d] - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 
 # LAX is good for testing
 LOCATIONS = [
@@ -84,7 +95,7 @@ def main():
 
 def lambda_handler(event, context):
     logging.info('Handler Started')
-    twitter_credentials = os.environ.get("TWTR")
+    twitter_credentials = json.loads(os.environ.get("TWTR"))
     main()
 
 if __name__ == "__main__":
