@@ -32,7 +32,7 @@ jobs:
         zip -r ../lambda_package.zip .
    
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: lambda_package
         path: lambda_package.zip
