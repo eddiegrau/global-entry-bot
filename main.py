@@ -3,6 +3,7 @@ import logging
 import sys
 import os
 import requests
+import json
 from tweepy import Client, Forbidden
 # from keys import twitter_credentials # Only enable for local testing
 
@@ -82,8 +83,7 @@ def main():
 
 def lambda_handler(event, context):
     logging.info('Lambda Handler Started')
-    twitter_credentials_string = os.environ.get("TWTR")
-    twitter_credentials = dict(item.split('=') for item in twitter_credentials_string.split(','))
+    twitter_credentials = json.loads(os.environ.get("TWTR"))
     main()
 
 if __name__ == "__main__":
