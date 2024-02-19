@@ -1,11 +1,11 @@
-import argparse
 from datetime import datetime, timedelta
 import logging
 import sys
 import os
 import requests
-import twitter
 import json
+from tweepy import Client, Forbidden
+from keys import twitter_credentials
 
 LOGGING_FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
 
@@ -26,7 +26,7 @@ LOCATIONS = [
     # ('LAX', 5180)
 ]
 
-DELTA = 6  # Weeks
+DELTA = 12   # Weeks
 
 SCHEDULER_API_URL = 'https://ttp.cbp.dhs.gov/schedulerapi/locations/{location}/slots?startTimestamp={start}&endTimestamp={end}'
 TTP_TIME_FORMAT = '%Y-%m-%dT%H:%M'
@@ -35,16 +35,17 @@ NOTIF_MESSAGE = 'New appointment slot open at {location}: {date}'
 MESSAGE_TIME_FORMAT = '%A, %B %d, %Y at %I:%M %p'
 
 def tweet(message):
-    api = twitter.Api(**twitter_credentials)
+    logging.info('Trying Tweet')
     try:
-        api.PostUpdate(message)
-    except twitter.TwitterError as e:
-        if len(e.message) == 1 and e.message[0]['code'] == 187:
-            logging.info('Tweet rejected (duplicate status)')
+        t.create_tweet(text=message)
+    except Forbidden as e:
+        logging.error(str(e))
+        if "duplicate content" in str(e):
+            logging.error("This tweet was not posted because it contains duplicate content.")
         else:
-            raise
+            logging.error("You do not have permission to perform this action.")
 
-def check_for_openings(location_name, location_code, test_mode=True):
+def check_for_openings(location_name, location_code):
     start = datetime.now()
     end = start + timedelta(weeks=DELTA)
 
@@ -64,40 +65,27 @@ def check_for_openings(location_name, location_code, test_mode=True):
             timestamp = datetime.strptime(result['timestamp'], TTP_TIME_FORMAT)
             message = NOTIF_MESSAGE.format(location=location_name,
                                            date=timestamp.strftime(MESSAGE_TIME_FORMAT))
-            if test_mode:
-                print(message)
-            else:
-                logging.info('Tweeting: ' + message)
-                tweet(message)
+            logging.info('Tweeting: ' + message)
+            tweet(message)
             return  # Halt on first match
 
     logging.info('No openings for {}'.format(location_name))
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--test', '-t', action='store_true', default=False)
-    parser.add_argument('--verbose', '-v', action='store_true', default=False)
-    args = parser.parse_args()
-
-#    if args.verbose:
-#        logging.basicConfig(format=LOGGING_FORMAT,
-#                            level=logging.INFO,
-#                            stream=sys.stdout)
-
     logging.basicConfig(format=LOGGING_FORMAT,
                             level=logging.INFO,
                             stream=sys.stdout)
 
     logging.info('Starting checks (locations: {})'.format(len(LOCATIONS)))
     for location_name, location_code in LOCATIONS:
-        check_for_openings(location_name, location_code, args.test)
+        check_for_openings(location_name, location_code)
 
 def lambda_handler(event, context):
-    logging.info('Handler Started')
+    logging.info('Lambda Handler Started')
     twitter_credentials = json.loads(os.environ.get("TWTR"))
     main()
 
 if __name__ == "__main__":
-    from keys import twitter_credentials
+    t = Client(**twitter_credentials)    
     main()
