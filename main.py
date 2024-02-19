@@ -88,5 +88,4 @@ def lambda_handler(event, context):
 
 if __name__ == "__main__":
     t = Client(**twitter_credentials)    
-    tweet("Test!")
     main()
