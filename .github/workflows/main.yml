@@ -8,7 +8,6 @@ on:
 jobs:
   package:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -75,18 +74,18 @@ jobs:
       run: |
         echo "::add-mask::${{ secrets.T_ENV }}"  
     
-    - name: Update Lambda environment variable with secret (with retries)
-      run: |
-        for i in {1..5}; do
-          echo "Attempt $i..."
-          if aws lambda update-function-configuration --function-name GE-Bot --environment "{"Variables":{"TWTR":"${{ secrets.T_ENV }}"}}"; then
-            echo "Update successful"
-            break
-          elif [ "$i" -lt 5 ]; then
-            echo "Update failed, retrying in 10 seconds..."
-            sleep 10
-          else
-            echo "Update failed after 5 attempts, exiting..."
-            exit 1
-          fi
-        done
+    # - name: Update Lambda environment variable with secret (with retries) # Disabled cause it's broke
+    #   run: |
+    #     for i in {1..5}; do
+    #       echo "Attempt $i..."
+    #       if aws lambda update-function-configuration --function-name GE-Bot --environment "{"Variables":{"TWTR":"${{ secrets.T_ENV }}"}}"; then
+    #         echo "Update successful"
+    #         break
+    #       elif [ "$i" -lt 5 ]; then
+    #         echo "Update failed, retrying in 10 seconds..."
+    #         sleep 10
+    #       else
+    #         echo "Update failed after 5 attempts, exiting..."
+    #         exit 1
+    #       fi
+    #     done
