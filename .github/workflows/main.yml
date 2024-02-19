@@ -79,7 +79,7 @@ jobs:
       run: |
         for i in {1..5}; do
           echo "Attempt $i..."
-          if aws lambda update-function-configuration --function-name GE-Bot --environment "{\"Variables\":{\"TWTR\":\"${{ secrets.T_ENV }}\"}}"; then
+          if aws lambda update-function-configuration --function-name GE-Bot --environment "{"Variables":{"TWTR":"${{ secrets.T_ENV }}"}}"; then
             echo "Update successful"
             break
           elif [ "$i" -lt 5 ]; then
