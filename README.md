@@ -21,11 +21,12 @@ pip install -r requirements.txt
 Then put your Twitter API credentials in a file called `keys.py`, which should define `twitter_credentials`:
 
 ```python
-twitter_credentials = dict(consumer_key='',
-                           consumer_secret='',
-                           access_token_key='',
-                           access_token_secret='')
+twitter_credentials = dict(BEARER_TOKEN='',
+                            OAUTH_TOKEN='',
+                            OAUTH_TOKEN_SECRET='',
+                            KEY='',
+                            SECRET='')
 ```
 
-This repo is setup to auto deploy to Lambda and will run every 10 minutes. 
+This repo is setup to auto deploy to Lambda and will run every 10 minutes via Event Bridge trigger. 
 My version is live [here](https://twitter.com/Marvs_GE_Bot)
