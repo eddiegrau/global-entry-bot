@@ -1,16 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# Bandit is a security linter designed to find common security issues in Python code.
-# This action will run Bandit on your codebase.
-# The results of the scan will be found under the Security tab of your repository.
-
-# https://github.com/marketplace/actions/bandit-scan is ISC licensed, by abirismyname
-# https://pypi.org/project/bandit/ is Apache v2.0 licensed, by PyCQA
-
-name: Bandit
+name: Secure Checks
 on:
   push:
     branches: [ "main" ]
@@ -50,3 +38,14 @@ jobs:
           # path to a .bandit file that supplies command line arguments
           # ini_path: # optional, default is DEFAULT
 
+  TruffleHog:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: TruffleHog Secret Scan
+      uses: trufflesecurity/trufflehog@v3.67.6
+      with:
+        extra_args: --only-verified --fail
