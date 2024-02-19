@@ -5,7 +5,7 @@ import os
 import requests
 import json
 from tweepy import Client, Forbidden
-from keys import twitter_credentials
+# from keys import twitter_credentials # Only enable for local testing
 
 LOGGING_FORMAT = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
 
