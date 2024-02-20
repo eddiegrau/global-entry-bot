@@ -73,16 +73,16 @@ def check_for_openings(location_name, location_code):
 
 
 def main():
-    logging.basicConfig(format=LOGGING_FORMAT,
-                            level=logging.INFO,
-                            stream=sys.stdout)
-
     logging.info('Starting checks (locations: {})'.format(len(LOCATIONS)))
     for location_name, location_code in LOCATIONS:
         check_for_openings(location_name, location_code)
 
 def lambda_handler(event, context):
-    logging.info('Lambda Handler Started')
+    logging.info('## ENVIRONMENT VARIABLES')
+    logging.info(os.environ['AWS_LAMBDA_LOG_GROUP_NAME'])
+    logging.info(os.environ['AWS_LAMBDA_LOG_STREAM_NAME'])
+    logging.info('## EVENT')
+    logging.info(event)
     twitter_credentials = json.loads(os.environ.get("TWTR"))
     main()
 
